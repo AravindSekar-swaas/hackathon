@@ -7,7 +7,7 @@
 
 import { COLORS } from '../../constants/uiConstants.js';
 
-const CHART_HEIGHT = 40;
+const DEFAULT_HEIGHT = 40;
 const CHART_PADDING = 4;
 
 /**
@@ -17,12 +17,18 @@ const CHART_PADDING = 4;
  * @param {Array<number>} props.data - Array of numeric values
  * @param {string} props.color - Line color
  * @param {number} props.width - Chart width in pixels
+ * @param {number} props.height - Chart height in pixels
  * @returns {JSX.Element} SparklineChart component
  * @author Aravind Sekar
  * @created 13-12-2025
  * @confidential
  */
-const SparklineChart = ({ data, color = COLORS.CHART_LINE, width = 120 }) => {
+const SparklineChart = ({
+  data,
+  color = COLORS.CHART_LINE,
+  width = 120,
+  height = DEFAULT_HEIGHT
+}) => {
   if (!data || data.length === 0) {
     return null;
   }
@@ -40,13 +46,13 @@ const SparklineChart = ({ data, color = COLORS.CHART_LINE, width = 120 }) => {
     const min = Math.min(...data);
     const range = max - min || 1;
 
-    const chartHeight = CHART_HEIGHT - CHART_PADDING * 2;
+    const chartHeight = height - CHART_PADDING * 2;
     const stepX = width / (data.length - 1);
 
     const points = data.map((value, index) => {
       const x = index * stepX;
       const normalizedValue = (value - min) / range;
-      const y = CHART_HEIGHT - CHART_PADDING - normalizedValue * chartHeight;
+      const y = height - CHART_PADDING - normalizedValue * chartHeight;
       return `${x},${y}`;
     });
 
@@ -54,7 +60,7 @@ const SparklineChart = ({ data, color = COLORS.CHART_LINE, width = 120 }) => {
   };
 
   return (
-    <svg width={width} height={CHART_HEIGHT} className='inline-block'>
+    <svg width={width} height={height} className='inline-block'>
       <path
         d={generatePath()}
         fill='none'
