@@ -1,0 +1,116 @@
+/**
+ * @confidential
+ * @fileoverview Performance metrics dashboard component
+ * @author Aravind Sekar
+ * @created 13-12-2025
+ */
+
+import StatCard from './common/StatCard.jsx';
+import SparklineChart from './common/SparklineChart.jsx';
+import Card from './common/Card.jsx';
+import { UI_TEXT, CSS_CLASSES, METRIC_CONFIG } from '../constants/uiConstants.js';
+import {
+  getLatestMetrics,
+  extractMetricValues,
+  calculateTrendDirection
+} from '../utils/performanceUtils.js';
+
+/**
+ * PerformanceMetrics component
+ * @description Displays animated stat cards and trend charts
+ * @param {Object} props - Component props
+ * @param {Object} props.rep - Representative data object
+ * @returns {JSX.Element} PerformanceMetrics component
+ * @author Aravind Sekar
+ * @created 13-12-2025
+ * @confidential
+ */
+const PerformanceMetrics = ({ rep }) => {
+  const latestMetrics = getLatestMetrics(rep.monthlyPerformance);
+
+  /**
+   * Gets metric data for rendering
+   * @description Extracts and formats metric information
+   * @param {string} metricKey - Metric identifier
+   * @returns {Object} Metric data object
+   * @author Aravind Sekar
+   * @created 13-12-2025
+   * @confidential
+   */
+  const getMetricData = metricKey => {
+    const values = extractMetricValues(rep.monthlyPerformance, metricKey);
+    const trend = calculateTrendDirection(values);
+    const config = METRIC_CONFIG[metricKey.toUpperCase()];
+
+    return {
+      values,
+      trend,
+      config,
+      current: latestMetrics[metricKey],
+      target: metricKey === 'visits' ? latestMetrics.target : null
+    };
+  };
+
+  const metrics = ['visits', 'coverage', 'samples', 'calls'];
+
+  return (
+    <div className='mb-6'>
+      <h2 className={`text-xl font-semibold mb-4 ${CSS_CLASSES.TEXT_PRIMARY}`}>
+        {UI_TEXT.PERFORMANCE_METRICS}
+      </h2>
+
+      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6'>
+        {metrics.map(metricKey => {
+          const data = getMetricData(metricKey);
+          return (
+            <StatCard
+              key={metricKey}
+              label={data.config.label}
+              value={data.current}
+              icon={data.config.icon}
+              color={data.config.color}
+              unit={data.config.unit}
+              trend={data.trend}
+              target={data.target}
+            />
+          );
+        })}
+      </div>
+
+      <Card className='p-6'>
+        <h3 className={`text-lg font-semibold mb-4 ${CSS_CLASSES.TEXT_PRIMARY}`}>
+          {UI_TEXT.MONTHLY_TREND}
+        </h3>
+
+        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6'>
+          {metrics.map(metricKey => {
+            const data = getMetricData(metricKey);
+            return (
+              <div key={metricKey} className='flex flex-col'>
+                <div className='flex items-center justify-between mb-2'>
+                  <span className={`text-sm font-medium ${CSS_CLASSES.TEXT_SECONDARY}`}>
+                    {data.config.label}
+                  </span>
+                  <span className={`text-xs ${CSS_CLASSES.TEXT_MUTED}`}>6 months</span>
+                </div>
+
+                <SparklineChart data={data.values} color={data.config.color} width={200} />
+
+                <div className='flex justify-between mt-2 text-xs'>
+                  <span className={CSS_CLASSES.TEXT_MUTED}>
+                    {rep.monthlyPerformance[0].month.split(' ')[0]}
+                  </span>
+                  <span className={CSS_CLASSES.TEXT_MUTED}>
+                    {rep.monthlyPerformance[rep.monthlyPerformance.length - 1].month.split(' ')[0]}
+                  </span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </Card>
+    </div>
+  );
+};
+
+export default PerformanceMetrics;
