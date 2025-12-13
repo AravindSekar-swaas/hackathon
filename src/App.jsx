@@ -22,8 +22,9 @@ import { UI_TEXT, CSS_CLASSES } from './constants/uiConstants.js';
  * @confidential
  */
 const App = () => {
-  const [selectedRepId, setSelectedRepId] = useState(null);
-  const [apiKey, setApiKey] = useState('');
+  const FIRST_REP_ID = REP_PERFORMANCE_DATA.reps[0]?.id || null;
+  const [selectedRepId, setSelectedRepId] = useState(FIRST_REP_ID);
+  const [apiKey, setApiKey] = useState(import.meta.env.VITE_OPENAI_API_KEY || '');
 
   /**
    * Gets selected representative data
@@ -57,39 +58,33 @@ const App = () => {
 
   return (
     <div className={CSS_CLASSES.CONTAINER}>
-      <header className={`${CSS_CLASSES.HEADER} py-6 px-8 sticky top-0 z-10`}>
-        <div className='max-w-7xl mx-auto flex items-center justify-between'>
-          <div>
-            <h1 className={`text-2xl font-bold ${CSS_CLASSES.TEXT_PRIMARY}`}>
-              {UI_TEXT.APP_TITLE}
-            </h1>
-            <p className={`text-sm ${CSS_CLASSES.TEXT_SECONDARY}`}>{UI_TEXT.COMPANY_NAME}</p>
-          </div>
-
-          {selectedRep && (
-            <button
-              onClick={() => setSelectedRepId(null)}
-              className={`${CSS_CLASSES.BUTTON_SECONDARY} px-4 py-2 text-sm`}
-            >
-              ← Back to Selection
-            </button>
-          )}
+      <header className={`${CSS_CLASSES.HEADER} py-6 px-8`}>
+        <div className='max-w-7xl mx-auto text-center'>
+          <h1 className={`text-2xl font-bold ${CSS_CLASSES.TEXT_PRIMARY}`}>{UI_TEXT.APP_TITLE}</h1>
+          <p className={`text-sm ${CSS_CLASSES.TEXT_SECONDARY}`}>{UI_TEXT.COMPANY_NAME}</p>
         </div>
       </header>
 
-      <main className='max-w-7xl mx-auto px-8 py-8'>
-        {!selectedRep ? (
+      <main className='max-w-7xl mx-auto px-8 py-6'>
+        <div className='flex justify-center mb-6'>
           <RepSelector
             reps={REP_PERFORMANCE_DATA.reps}
             selectedRepId={selectedRepId}
             onSelectRep={handleSelectRep}
           />
-        ) : (
-          <>
-            <RepProfile rep={selectedRep} />
-            <PerformanceMetrics rep={selectedRep} />
-            <AIInsights rep={selectedRep} apiKey={apiKey} />
-          </>
+        </div>
+
+        {selectedRep && (
+          <div className='grid grid-cols-1 lg:grid-cols-12 gap-6 mt-6'>
+            <div className='lg:col-span-4'>
+              <RepProfile rep={selectedRep} />
+            </div>
+
+            <div className='lg:col-span-8'>
+              <PerformanceMetrics rep={selectedRep} />
+              <AIInsights rep={selectedRep} apiKey={apiKey} />
+            </div>
+          </div>
         )}
       </main>
 

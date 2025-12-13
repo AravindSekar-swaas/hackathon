@@ -5,8 +5,16 @@
  * @created 13-12-2025
  */
 
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer
+} from 'recharts';
 import StatCard from './common/StatCard.jsx';
-import SparklineChart from './common/SparklineChart.jsx';
 import Card from './common/Card.jsx';
 import { UI_TEXT, CSS_CLASSES, METRIC_CONFIG } from '../constants/uiConstants.js';
 import {
@@ -82,28 +90,62 @@ const PerformanceMetrics = ({ rep }) => {
           {UI_TEXT.MONTHLY_TREND}
         </h3>
 
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6'>
+        <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
           {metrics.map(metricKey => {
             const data = getMetricData(metricKey);
+            const percentageChange =
+              data.values.length >= 2
+                ? (
+                    ((data.values[data.values.length - 1] - data.values[0]) / data.values[0]) *
+                    100
+                  ).toFixed(1)
+                : 0;
+            const isPositive = percentageChange >= 0;
+
+            const chartData = rep.monthlyPerformance.map((month, index) => ({
+              month: month.month.split(' ')[0],
+              value: data.values[index]
+            }));
+
             return (
               <div key={metricKey} className='flex flex-col'>
-                <div className='flex items-center justify-between mb-2'>
+                <div className='flex items-center justify-between mb-3'>
                   <span className={`text-sm font-medium ${CSS_CLASSES.TEXT_SECONDARY}`}>
                     {data.config.label}
                   </span>
-                  <span className={`text-xs ${CSS_CLASSES.TEXT_MUTED}`}>6 months</span>
-                </div>
-
-                <SparklineChart data={data.values} color={data.config.color} width={200} />
-
-                <div className='flex justify-between mt-2 text-xs'>
-                  <span className={CSS_CLASSES.TEXT_MUTED}>
-                    {rep.monthlyPerformance[0].month.split(' ')[0]}
-                  </span>
-                  <span className={CSS_CLASSES.TEXT_MUTED}>
-                    {rep.monthlyPerformance[rep.monthlyPerformance.length - 1].month.split(' ')[0]}
+                  <span
+                    className={`text-lg font-bold ${
+                      isPositive ? 'text-green-400' : 'text-red-400'
+                    }`}
+                  >
+                    {isPositive ? '+' : ''}
+                    {percentageChange}%
                   </span>
                 </div>
+
+                <ResponsiveContainer width='100%' height={150}>
+                  <LineChart data={chartData} margin={{ top: 5, right: 5, left: -20, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray='3 3' stroke='#374151' />
+                    <XAxis dataKey='month' stroke='#9ca3af' style={{ fontSize: '12px' }} />
+                    <YAxis stroke='#9ca3af' style={{ fontSize: '12px' }} />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: '#1e293b',
+                        border: '1px solid #475569',
+                        borderRadius: '6px',
+                        color: '#e2e8f0'
+                      }}
+                    />
+                    <Line
+                      type='monotone'
+                      dataKey='value'
+                      stroke={data.config.color}
+                      strokeWidth={2}
+                      dot={{ fill: data.config.color, r: 4 }}
+                      activeDot={{ r: 6 }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
               </div>
             );
           })}
