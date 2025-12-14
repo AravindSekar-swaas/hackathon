@@ -2,7 +2,7 @@
  * @confidential
  * @fileoverview View mode toggle component
  * @author Aravind Sekar
- * @created 15-12-2025
+ * @created 14-12-2025
  */
 
 import { useTheme } from '../context/ThemeContext.jsx';
@@ -15,7 +15,7 @@ import { useTheme } from '../context/ThemeContext.jsx';
  * @param {Function} props.onViewChange - Callback when view mode changes
  * @returns {JSX.Element} ViewToggle component
  * @author Aravind Sekar
- * @created 15-12-2025
+ * @created 14-12-2025
  * @confidential
  */
 const ViewToggle = ({ viewMode, onViewChange }) => {
@@ -27,7 +27,7 @@ const ViewToggle = ({ viewMode, onViewChange }) => {
    * @param {boolean} isActive - Whether button is active
    * @returns {string} CSS classes
    * @author Aravind Sekar
-   * @created 15-12-2025
+   * @created 14-12-2025
    * @confidential
    */
   const getButtonClasses = isActive => {
@@ -62,4 +62,3 @@ const ViewToggle = ({ viewMode, onViewChange }) => {
 };
 
 export default ViewToggle;
-

@@ -244,7 +244,7 @@ const generateFallbackInsights = () => ({
  * @returns {Promise<Object>} AI-generated comparison object
  * @throws {Error} If API call fails or response is invalid
  * @author Aravind Sekar
- * @created 15-12-2025
+ * @created 14-12-2025
  * @confidential
  */
 export const generateComparisonInsights = async (rep1Data, rep2Data, apiKey, config = {}) => {
@@ -268,7 +268,7 @@ export const generateComparisonInsights = async (rep1Data, rep2Data, apiKey, con
  * @param {Object} rep2Data - Second representative data
  * @returns {string} Formatted comparison prompt
  * @author Aravind Sekar
- * @created 15-12-2025
+ * @created 14-12-2025
  * @confidential
  */
 const buildComparisonPrompt = (rep1Data, rep2Data) => {
@@ -312,7 +312,7 @@ Please provide a comprehensive comparison in JSON format:
  * @returns {Object} Parsed comparison object
  * @throws {Error} If response format is invalid
  * @author Aravind Sekar
- * @created 15-12-2025
+ * @created 14-12-2025
  * @confidential
  */
 const parseComparisonResponse = response => {

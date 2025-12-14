@@ -2,7 +2,7 @@
  * @confidential
  * @fileoverview Application header component
  * @author Aravind Sekar
- * @created 15-12-2025
+ * @created 14-12-2025
  */
 
 import ThemeToggle from './common/ThemeToggle.jsx';
@@ -18,7 +18,7 @@ import { UI_TEXT } from '../constants/uiConstants.js';
  * @param {Function} props.onViewChange - View mode change handler
  * @returns {JSX.Element} AppHeader component
  * @author Aravind Sekar
- * @created 15-12-2025
+ * @created 14-12-2025
  * @confidential
  */
 const AppHeader = ({ viewMode, onViewChange }) => {
@@ -42,9 +42,7 @@ const AppHeader = ({ viewMode, onViewChange }) => {
         >
           {UI_TEXT.APP_TITLE}
         </h1>
-        <p
-          className={`text-sm transition-colors ${isDark ? 'text-slate-400' : 'text-slate-600'}`}
-        >
+        <p className={`text-sm transition-colors ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
           {UI_TEXT.COMPANY_NAME}
         </p>
       </div>
@@ -53,4 +51,3 @@ const AppHeader = ({ viewMode, onViewChange }) => {
 };
 
 export default AppHeader;
-

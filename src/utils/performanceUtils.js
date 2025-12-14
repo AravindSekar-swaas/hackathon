@@ -103,6 +103,46 @@ export const getLatestMetrics = monthlyPerformance => {
 };
 
 /**
+ * Gets metrics for a specific month from performance data
+ * @description Retrieves metrics for the specified month, or latest if not found
+ * @param {Array<Object>} monthlyPerformance - Array of monthly performance objects
+ * @param {string} selectedMonth - Month identifier (e.g., 'Jul 2024')
+ * @returns {Object} Selected month's metrics object
+ * @author Aravind Sekar
+ * @created 14-12-2025
+ * @confidential
+ */
+export const getMetricsForMonth = (monthlyPerformance, selectedMonth) => {
+  if (!monthlyPerformance || monthlyPerformance.length === 0) {
+    return { visits: 0, coverage: 0, samples: 0, calls: 0, target: 0 };
+  }
+  if (!selectedMonth) {
+    return getLatestMetrics(monthlyPerformance);
+  }
+  const monthData = monthlyPerformance.find(month => month.month === selectedMonth);
+  if (!monthData) {
+    return getLatestMetrics(monthlyPerformance);
+  }
+  return monthData.metrics;
+};
+
+/**
+ * Gets available months from performance data
+ * @description Extracts list of available months from performance data
+ * @param {Array<Object>} monthlyPerformance - Array of monthly performance objects
+ * @returns {Array<string>} Array of month identifiers
+ * @author Aravind Sekar
+ * @created 14-12-2025
+ * @confidential
+ */
+export const getAvailableMonths = monthlyPerformance => {
+  if (!monthlyPerformance || monthlyPerformance.length === 0) {
+    return [];
+  }
+  return monthlyPerformance.map(month => month.month);
+};
+
+/**
  * Formats a number with thousand separators
  * @description Adds commas to large numbers for readability
  * @param {number} value - Numeric value to format

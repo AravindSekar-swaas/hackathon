@@ -2,7 +2,7 @@
  * @confidential
  * @fileoverview Custom hook for view mode management
  * @author Aravind Sekar
- * @created 15-12-2025
+ * @created 14-12-2025
  */
 
 import { useState } from 'react';
@@ -13,7 +13,7 @@ import { useState } from 'react';
  * @param {string} initialMode - Initial view mode
  * @returns {Object} View mode state and handlers
  * @author Aravind Sekar
- * @created 15-12-2025
+ * @created 14-12-2025
  * @confidential
  */
 export const useViewMode = (initialMode = 'single') => {
@@ -25,7 +25,7 @@ export const useViewMode = (initialMode = 'single') => {
    * @param {string} mode - New view mode ('single' | 'compare')
    * @returns {void}
    * @author Aravind Sekar
-   * @created 15-12-2025
+   * @created 14-12-2025
    * @confidential
    */
   const handleViewChange = mode => {
@@ -37,4 +37,3 @@ export const useViewMode = (initialMode = 'single') => {
     handleViewChange
   };
 };
-

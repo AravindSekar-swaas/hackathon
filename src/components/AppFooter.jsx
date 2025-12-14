@@ -2,7 +2,7 @@
  * @confidential
  * @fileoverview Application footer component
  * @author Aravind Sekar
- * @created 15-12-2025
+ * @created 14-12-2025
  */
 
 import { useTheme } from '../context/ThemeContext.jsx';
@@ -14,7 +14,7 @@ import { useTheme } from '../context/ThemeContext.jsx';
  * @param {Object} props.metadata - Metadata object with dataRange and lastUpdated
  * @returns {JSX.Element} AppFooter component
  * @author Aravind Sekar
- * @created 15-12-2025
+ * @created 14-12-2025
  * @confidential
  */
 const AppFooter = ({ metadata }) => {
@@ -27,9 +27,7 @@ const AppFooter = ({ metadata }) => {
       }`}
     >
       <div className='max-w-7xl mx-auto text-center'>
-        <p
-          className={`text-xs transition-colors ${isDark ? 'text-slate-500' : 'text-slate-600'}`}
-        >
+        <p className={`text-xs transition-colors ${isDark ? 'text-slate-500' : 'text-slate-600'}`}>
           Data Range: {metadata.dataRange} | Last Updated: {metadata.lastUpdated}
         </p>
       </div>
@@ -38,4 +36,3 @@ const AppFooter = ({ metadata }) => {
 };
 
 export default AppFooter;
-

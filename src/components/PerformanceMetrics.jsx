@@ -19,6 +19,7 @@ import Card from './common/Card.jsx';
 import { UI_TEXT, METRIC_CONFIG } from '../constants/uiConstants.js';
 import {
   getLatestMetrics,
+  getMetricsForMonth,
   extractMetricValues,
   calculateTrendDirection
 } from '../utils/performanceUtils.js';
@@ -29,14 +30,36 @@ import { useTheme } from '../context/ThemeContext.jsx';
  * @description Displays animated stat cards and trend charts
  * @param {Object} props - Component props
  * @param {Object} props.rep - Representative data object
+ * @param {string} props.selectedMonth - Selected month for viewing data
  * @returns {JSX.Element} PerformanceMetrics component
  * @author Aravind Sekar
  * @created 13-12-2025
  * @confidential
  */
-const PerformanceMetrics = ({ rep }) => {
+const PerformanceMetrics = ({ rep, selectedMonth }) => {
   const { isDark } = useTheme();
-  const latestMetrics = getLatestMetrics(rep.monthlyPerformance);
+  const currentMetrics = getMetricsForMonth(rep.monthlyPerformance, selectedMonth);
+
+  /**
+   * Gets filtered monthly performance data up to selected month
+   * @description Filters performance data to show only months up to selected month
+   * @returns {Array<Object>} Filtered monthly performance array
+   * @author Aravind Sekar
+   * @created 14-12-2025
+   * @confidential
+   */
+  const getFilteredPerformanceData = () => {
+    if (!selectedMonth) {
+      return rep.monthlyPerformance;
+    }
+    const selectedIndex = rep.monthlyPerformance.findIndex(month => month.month === selectedMonth);
+    if (selectedIndex === -1) {
+      return rep.monthlyPerformance;
+    }
+    return rep.monthlyPerformance.slice(0, selectedIndex + 1);
+  };
+
+  const filteredPerformance = getFilteredPerformanceData();
 
   /**
    * Gets metric data for rendering
@@ -48,7 +71,7 @@ const PerformanceMetrics = ({ rep }) => {
    * @confidential
    */
   const getMetricData = metricKey => {
-    const values = extractMetricValues(rep.monthlyPerformance, metricKey);
+    const values = extractMetricValues(filteredPerformance, metricKey);
     const trend = calculateTrendDirection(values);
     const config = METRIC_CONFIG[metricKey.toUpperCase()];
 
@@ -56,8 +79,8 @@ const PerformanceMetrics = ({ rep }) => {
       values,
       trend,
       config,
-      current: latestMetrics[metricKey],
-      target: metricKey === 'visits' ? latestMetrics.target : null
+      current: currentMetrics[metricKey],
+      target: metricKey === 'visits' ? currentMetrics.target : null
     };
   };
 
@@ -88,7 +111,9 @@ const PerformanceMetrics = ({ rep }) => {
       </div>
 
       <Card className='p-6'>
-        <h3 className={`text-lg font-semibold mb-4 ${isDark ? 'text-slate-100' : 'text-slate-900'}`}>
+        <h3
+          className={`text-lg font-semibold mb-4 ${isDark ? 'text-slate-100' : 'text-slate-900'}`}
+        >
           {UI_TEXT.MONTHLY_TREND}
         </h3>
 
@@ -104,7 +129,7 @@ const PerformanceMetrics = ({ rep }) => {
                 : 0;
             const isPositive = percentageChange >= 0;
 
-            const chartData = rep.monthlyPerformance.map((month, index) => ({
+            const chartData = filteredPerformance.map((month, index) => ({
               month: month.month.split(' ')[0],
               value: data.values[index]
             }));
@@ -112,7 +137,11 @@ const PerformanceMetrics = ({ rep }) => {
             return (
               <div key={metricKey} className='flex flex-col'>
                 <div className='flex items-center justify-between mb-3'>
-                  <span className={`text-sm font-medium ${isDark ? 'text-slate-400' : 'text-slate-700'}`}>
+                  <span
+                    className={`text-sm font-medium ${
+                      isDark ? 'text-slate-400' : 'text-slate-700'
+                    }`}
+                  >
                     {data.config.label}
                   </span>
                   <span
@@ -128,7 +157,11 @@ const PerformanceMetrics = ({ rep }) => {
                 <ResponsiveContainer width='100%' height={150}>
                   <LineChart data={chartData} margin={{ top: 5, right: 5, left: -20, bottom: 5 }}>
                     <CartesianGrid strokeDasharray='3 3' stroke={isDark ? '#374151' : '#e5e7eb'} />
-                    <XAxis dataKey='month' stroke={isDark ? '#9ca3af' : '#6b7280'} style={{ fontSize: '12px' }} />
+                    <XAxis
+                      dataKey='month'
+                      stroke={isDark ? '#9ca3af' : '#6b7280'}
+                      style={{ fontSize: '12px' }}
+                    />
                     <YAxis stroke={isDark ? '#9ca3af' : '#6b7280'} style={{ fontSize: '12px' }} />
                     <Tooltip
                       contentStyle={{

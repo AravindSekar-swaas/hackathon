@@ -17,20 +17,40 @@ import { useTheme } from '../context/ThemeContext.jsx';
  * @param {Object} props - Component props
  * @param {Object} props.rep - Representative data object
  * @param {string} props.apiKey - API key for AI service (optional)
+ * @param {string} props.selectedMonth - Selected month for viewing data
  * @returns {JSX.Element} AIInsights component
  * @author Aravind Sekar
  * @created 13-12-2025
  * @confidential
  */
-const AIInsights = ({ rep, apiKey }) => {
+const AIInsights = ({ rep, apiKey, selectedMonth }) => {
   const [insights, setInsights] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const { isDark } = useTheme();
 
+  /**
+   * Gets filtered monthly performance data up to selected month
+   * @description Filters performance data to show only months up to selected month
+   * @returns {Array<Object>} Filtered monthly performance array
+   * @author Aravind Sekar
+   * @created 14-12-2025
+   * @confidential
+   */
+  const getFilteredPerformanceData = () => {
+    if (!selectedMonth) {
+      return rep.monthlyPerformance;
+    }
+    const selectedIndex = rep.monthlyPerformance.findIndex(month => month.month === selectedMonth);
+    if (selectedIndex === -1) {
+      return rep.monthlyPerformance;
+    }
+    return rep.monthlyPerformance.slice(0, selectedIndex + 1);
+  };
+
   useEffect(() => {
     loadInsights();
-  }, [rep.id]);
+  }, [rep.id, selectedMonth]);
 
   /**
    * Loads AI insights for the representative
@@ -45,17 +65,28 @@ const AIInsights = ({ rep, apiKey }) => {
     setError(null);
 
     try {
+      const filteredPerformance = getFilteredPerformanceData();
+      const repWithFilteredData = {
+        ...rep,
+        monthlyPerformance: filteredPerformance
+      };
+
       if (apiKey) {
-        const result = await generatePerformanceInsights(rep, apiKey);
+        const result = await generatePerformanceInsights(repWithFilteredData, apiKey);
         setInsights(result);
       } else {
-        const mockInsights = generateMockInsights(rep);
+        const mockInsights = generateMockInsights(repWithFilteredData);
         await simulateDelay();
         setInsights(mockInsights);
       }
     } catch (err) {
       setError(err.message);
-      setInsights(generateMockInsights(rep));
+      const filteredPerformance = getFilteredPerformanceData();
+      const repWithFilteredData = {
+        ...rep,
+        monthlyPerformance: filteredPerformance
+      };
+      setInsights(generateMockInsights(repWithFilteredData));
     } finally {
       setLoading(false);
     }

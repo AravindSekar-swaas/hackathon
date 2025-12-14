@@ -2,13 +2,16 @@
  * @confidential
  * @fileoverview Single representative view component
  * @author Aravind Sekar
- * @created 15-12-2025
+ * @created 14-12-2025
  */
 
+import { useState, useEffect } from 'react';
 import RepSelector from './RepSelector.jsx';
 import RepProfile from './RepProfile.jsx';
 import PerformanceMetrics from './PerformanceMetrics.jsx';
 import AIInsights from './AIInsights.jsx';
+import MonthSelector from './common/MonthSelector.jsx';
+import { getAvailableMonths } from '../utils/performanceUtils.js';
 
 /**
  * SingleRepView component
@@ -20,16 +23,18 @@ import AIInsights from './AIInsights.jsx';
  * @param {string} props.apiKey - API key for AI service
  * @returns {JSX.Element} SingleRepView component
  * @author Aravind Sekar
- * @created 15-12-2025
+ * @created 14-12-2025
  * @confidential
  */
 const SingleRepView = ({ reps, selectedRepId, onSelectRep, apiKey }) => {
+  const [selectedMonth, setSelectedMonth] = useState('');
+
   /**
    * Gets selected representative data
    * @description Finds rep object by ID
    * @returns {Object|null} Representative data or null
    * @author Aravind Sekar
-   * @created 15-12-2025
+   * @created 14-12-2025
    * @confidential
    */
   const getSelectedRep = () => {
@@ -40,6 +45,27 @@ const SingleRepView = ({ reps, selectedRepId, onSelectRep, apiKey }) => {
   };
 
   const selectedRep = getSelectedRep();
+
+  /**
+   * Resets month selection when rep changes
+   * @description Clears selected month when switching representatives
+   * @author Aravind Sekar
+   * @created 14-12-2025
+   * @confidential
+   */
+  useEffect(() => {
+    setSelectedMonth('');
+  }, [selectedRepId]);
+
+  /**
+   * Gets available months for selected rep
+   * @description Extracts available months from rep's performance data
+   * @returns {Array<string>} Array of available month strings
+   * @author Aravind Sekar
+   * @created 14-12-2025
+   * @confidential
+   */
+  const availableMonths = selectedRep ? getAvailableMonths(selectedRep.monthlyPerformance) : [];
 
   return (
     <>
@@ -54,8 +80,13 @@ const SingleRepView = ({ reps, selectedRepId, onSelectRep, apiKey }) => {
           </div>
 
           <div className='lg:col-span-8'>
-            <PerformanceMetrics rep={selectedRep} />
-            <AIInsights rep={selectedRep} apiKey={apiKey} />
+            <MonthSelector
+              availableMonths={availableMonths}
+              selectedMonth={selectedMonth}
+              onMonthChange={setSelectedMonth}
+            />
+            <PerformanceMetrics rep={selectedRep} selectedMonth={selectedMonth} />
+            <AIInsights rep={selectedRep} apiKey={apiKey} selectedMonth={selectedMonth} />
           </div>
         </div>
       )}
@@ -64,4 +95,3 @@ const SingleRepView = ({ reps, selectedRepId, onSelectRep, apiKey }) => {
 };
 
 export default SingleRepView;
-

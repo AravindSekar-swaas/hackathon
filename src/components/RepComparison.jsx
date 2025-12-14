@@ -2,7 +2,7 @@
  * @confidential
  * @fileoverview AI-powered representative comparison component
  * @author Aravind Sekar
- * @created 15-12-2025
+ * @created 14-12-2025
  */
 
 import { useState, useMemo } from 'react';
@@ -85,7 +85,7 @@ const INSIGHT_CARD_CONFIG = {
  * @param {number} value2 - Second value
  * @returns {Object} Comparison result
  * @author Aravind Sekar
- * @created 15-12-2025
+ * @created 14-12-2025
  * @confidential
  */
 const compareMetricValues = (value1, value2) => {
@@ -106,7 +106,7 @@ const compareMetricValues = (value1, value2) => {
  * @param {number} index - Rep index in array
  * @returns {string} CSS gradient class
  * @author Aravind Sekar
- * @created 15-12-2025
+ * @created 14-12-2025
  * @confidential
  */
 const getAvatarColorClass = index => {
@@ -129,7 +129,7 @@ const getAvatarColorClass = index => {
  * @param {boolean} props.isDark - Dark theme flag
  * @returns {JSX.Element} RepSelector component
  * @author Aravind Sekar
- * @created 15-12-2025
+ * @created 14-12-2025
  * @confidential
  */
 const RepSelector = ({ label, value, onChange, reps, excludeId, isDark }) => {
@@ -173,7 +173,7 @@ const RepSelector = ({ label, value, onChange, reps, excludeId, isDark }) => {
  * @param {boolean} props.isMobile - Mobile view flag
  * @returns {JSX.Element} VSDivider component
  * @author Aravind Sekar
- * @created 15-12-2025
+ * @created 14-12-2025
  * @confidential
  */
 const VSDivider = ({ isMobile = false }) => {
@@ -206,7 +206,7 @@ const VSDivider = ({ isMobile = false }) => {
  * @param {boolean} props.isDark - Dark theme flag
  * @returns {JSX.Element} RepCard component
  * @author Aravind Sekar
- * @created 15-12-2025
+ * @created 14-12-2025
  * @confidential
  */
 const RepCard = ({ rep, metrics, repIndex, colorScheme, isDark }) => {
@@ -289,7 +289,7 @@ const RepCard = ({ rep, metrics, repIndex, colorScheme, isDark }) => {
  * @param {boolean} props.isDark - Dark theme flag
  * @returns {JSX.Element} MetricRow component
  * @author Aravind Sekar
- * @created 15-12-2025
+ * @created 14-12-2025
  * @confidential
  */
 const MetricRow = ({ metric, value1, value2, rep1Name, rep2Name, isDark }) => {
@@ -358,7 +358,7 @@ const MetricRow = ({ metric, value1, value2, rep1Name, rep2Name, isDark }) => {
  * @param {boolean} props.isDark - Dark theme flag
  * @returns {JSX.Element} InsightCard component
  * @author Aravind Sekar
- * @created 15-12-2025
+ * @created 14-12-2025
  * @confidential
  */
 const InsightCard = ({ title, icon, items, config, isDark }) => {
@@ -402,7 +402,7 @@ const InsightCard = ({ title, icon, items, config, isDark }) => {
  * @param {string} props.apiKey - API key for AI service
  * @returns {JSX.Element} RepComparison component
  * @author Aravind Sekar
- * @created 15-12-2025
+ * @created 14-12-2025
  * @confidential
  */
 const RepComparison = ({ reps, apiKey }) => {
@@ -436,7 +436,7 @@ const RepComparison = ({ reps, apiKey }) => {
    * @description Triggers AI comparison between two reps
    * @returns {Promise<void>}
    * @author Aravind Sekar
-   * @created 15-12-2025
+   * @created 14-12-2025
    * @confidential
    */
   const handleCompare = async () => {
@@ -476,7 +476,7 @@ const RepComparison = ({ reps, apiKey }) => {
    * @param {string} repId - Selected rep ID
    * @returns {void}
    * @author Aravind Sekar
-   * @created 15-12-2025
+   * @created 14-12-2025
    * @confidential
    */
   const handleRepChange = (repNumber, repId) => {
