@@ -8,7 +8,8 @@
 import { useState } from 'react';
 import Card from './common/Card.jsx';
 import Badge from './common/Badge.jsx';
-import { UI_TEXT, CSS_CLASSES } from '../constants/uiConstants.js';
+import { UI_TEXT } from '../constants/uiConstants.js';
+import { useTheme } from '../context/ThemeContext.jsx';
 
 /**
  * RepProfile component
@@ -22,6 +23,7 @@ import { UI_TEXT, CSS_CLASSES } from '../constants/uiConstants.js';
  */
 const RepProfile = ({ rep }) => {
   const { personalInfo, assignments } = rep;
+  const { isDark } = useTheme();
   const [showDoctors, setShowDoctors] = useState(false);
 
   /**
@@ -82,21 +84,21 @@ const RepProfile = ({ rep }) => {
   return (
     <Card className='p-6 h-full'>
       <div className='flex flex-col items-center text-center mb-6'>
-        <div className='w-20 h-20 rounded-full bg-gradient-to-br from-teal-500 to-teal-700 flex items-center justify-center text  -white text-2xl font-bold mb-4'>
+        <div className='w-20 h-20 rounded-full bg-gradient-to-br from-teal-500 to-teal-700 flex items-center justify-center text-white text-2xl font-bold mb-4'>
           {getInitials(personalInfo.name)}
         </div>
-        <h2 className={`text-xl font-bold ${CSS_CLASSES.TEXT_PRIMARY} mb-1`}>
+        <h2 className={`text-xl font-bold mb-1 ${isDark ? 'text-slate-100' : 'text-slate-900'}`}>
           {personalInfo.name}
         </h2>
-        <p className={`text-sm ${CSS_CLASSES.TEXT_SECONDARY} flex items-center gap-1`}>
+        <p className={`text-sm flex items-center gap-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
           <span>📍</span> {personalInfo.territory}, {personalInfo.region}
         </p>
       </div>
 
       <div className='space-y-4'>
-        <div className='flex justify-between items-center py-3 border-b border-slate-700'>
-          <span className={`text-sm ${CSS_CLASSES.TEXT_MUTED}`}>Join Date</span>
-          <span className={`text-sm font-medium ${CSS_CLASSES.TEXT_PRIMARY}`}>
+        <div className={`flex justify-between items-center py-3 border-b ${isDark ? 'border-slate-700' : 'border-gray-200'}`}>
+          <span className={`text-sm ${isDark ? 'text-slate-500' : 'text-slate-600'}`}>Join Date</span>
+          <span className={`text-sm font-medium ${isDark ? 'text-slate-100' : 'text-slate-900'}`}>
             {new Date(personalInfo.joinDate).toLocaleDateString('en-US', {
               month: 'short',
               year: 'numeric'
@@ -104,24 +106,24 @@ const RepProfile = ({ rep }) => {
           </span>
         </div>
 
-        <div className='flex justify-between items-center py-3 border-b border-slate-700'>
-          <span className={`text-sm ${CSS_CLASSES.TEXT_MUTED}`}>Target Achievement</span>
-          <span className={`text-sm font-medium ${CSS_CLASSES.TEXT_PRIMARY}`}>
+        <div className={`flex justify-between items-center py-3 border-b ${isDark ? 'border-slate-700' : 'border-gray-200'}`}>
+          <span className={`text-sm ${isDark ? 'text-slate-500' : 'text-slate-600'}`}>Target Achievement</span>
+          <span className={`text-sm font-medium ${isDark ? 'text-slate-100' : 'text-slate-900'}`}>
             {rep.performanceSummary.avgTargetAchievement}%
           </span>
         </div>
 
-        <div className='py-3 border-b border-slate-700'>
+        <div className={`py-3 border-b ${isDark ? 'border-slate-700' : 'border-gray-200'}`}>
           <button
             onClick={() => setShowDoctors(!showDoctors)}
-            className='w-full flex justify-between items-center cursor-pointer hover:bg-slate-700/30 rounded px-2 py-1 transition-colors'
+            className={`w-full flex justify-between items-center cursor-pointer rounded px-2 py-1 transition-colors ${isDark ? 'hover:bg-slate-700/30' : 'hover:bg-gray-100'}`}
           >
-            <span className={`text-sm ${CSS_CLASSES.TEXT_MUTED}`}>Key Doctors</span>
+            <span className={`text-sm ${isDark ? 'text-slate-500' : 'text-slate-600'}`}>Key Doctors</span>
             <div className='flex items-center gap-2'>
-              <span className={`text-sm font-medium ${CSS_CLASSES.TEXT_PRIMARY}`}>
+              <span className={`text-sm font-medium ${isDark ? 'text-slate-100' : 'text-slate-900'}`}>
                 {assignments.topDoctors.length}
               </span>
-              <span className={`text-xs ${CSS_CLASSES.TEXT_MUTED}`}>{showDoctors ? '▲' : '▼'}</span>
+              <span className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-600'}`}>{showDoctors ? '▲' : '▼'}</span>
             </div>
           </button>
 
@@ -130,13 +132,13 @@ const RepProfile = ({ rep }) => {
               {assignments.topDoctors.map(doctor => (
                 <div
                   key={doctor.name}
-                  className='flex items-center justify-between p-2 bg-slate-700/30 rounded'
+                  className={`flex items-center justify-between p-2 rounded ${isDark ? 'bg-slate-700/30' : 'bg-gray-100'}`}
                 >
                   <div className='flex-1'>
-                    <p className={`text-sm font-medium ${CSS_CLASSES.TEXT_PRIMARY}`}>
+                    <p className={`text-sm font-medium ${isDark ? 'text-slate-100' : 'text-slate-900'}`}>
                       {doctor.name}
                     </p>
-                    <p className={`text-xs ${CSS_CLASSES.TEXT_MUTED}`}>{doctor.specialty}</p>
+                    <p className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-600'}`}>{doctor.specialty}</p>
                   </div>
                   <span
                     className={`px-2 py-1 rounded text-xs font-bold border ${getTierColor(
@@ -152,7 +154,7 @@ const RepProfile = ({ rep }) => {
         </div>
 
         <div className='py-3'>
-          <h3 className={`text-sm font-medium ${CSS_CLASSES.TEXT_MUTED} mb-3`}>
+          <h3 className={`text-sm font-medium mb-3 ${isDark ? 'text-slate-500' : 'text-slate-600'}`}>
             {UI_TEXT.PRODUCTS}
           </h3>
           <div className='flex flex-wrap gap-2'>

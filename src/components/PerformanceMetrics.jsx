@@ -16,12 +16,13 @@ import {
 } from 'recharts';
 import StatCard from './common/StatCard.jsx';
 import Card from './common/Card.jsx';
-import { UI_TEXT, CSS_CLASSES, METRIC_CONFIG } from '../constants/uiConstants.js';
+import { UI_TEXT, METRIC_CONFIG } from '../constants/uiConstants.js';
 import {
   getLatestMetrics,
   extractMetricValues,
   calculateTrendDirection
 } from '../utils/performanceUtils.js';
+import { useTheme } from '../context/ThemeContext.jsx';
 
 /**
  * PerformanceMetrics component
@@ -34,6 +35,7 @@ import {
  * @confidential
  */
 const PerformanceMetrics = ({ rep }) => {
+  const { isDark } = useTheme();
   const latestMetrics = getLatestMetrics(rep.monthlyPerformance);
 
   /**
@@ -63,7 +65,7 @@ const PerformanceMetrics = ({ rep }) => {
 
   return (
     <div className='mb-6'>
-      <h2 className={`text-xl font-semibold mb-4 ${CSS_CLASSES.TEXT_PRIMARY}`}>
+      <h2 className={`text-xl font-semibold mb-4 ${isDark ? 'text-slate-100' : 'text-slate-900'}`}>
         {UI_TEXT.PERFORMANCE_METRICS}
       </h2>
 
@@ -86,7 +88,7 @@ const PerformanceMetrics = ({ rep }) => {
       </div>
 
       <Card className='p-6'>
-        <h3 className={`text-lg font-semibold mb-4 ${CSS_CLASSES.TEXT_PRIMARY}`}>
+        <h3 className={`text-lg font-semibold mb-4 ${isDark ? 'text-slate-100' : 'text-slate-900'}`}>
           {UI_TEXT.MONTHLY_TREND}
         </h3>
 
@@ -110,12 +112,12 @@ const PerformanceMetrics = ({ rep }) => {
             return (
               <div key={metricKey} className='flex flex-col'>
                 <div className='flex items-center justify-between mb-3'>
-                  <span className={`text-sm font-medium ${CSS_CLASSES.TEXT_SECONDARY}`}>
+                  <span className={`text-sm font-medium ${isDark ? 'text-slate-400' : 'text-slate-700'}`}>
                     {data.config.label}
                   </span>
                   <span
                     className={`text-lg font-bold ${
-                      isPositive ? 'text-green-400' : 'text-red-400'
+                      isPositive ? 'text-green-500' : 'text-red-500'
                     }`}
                   >
                     {isPositive ? '+' : ''}
@@ -125,15 +127,15 @@ const PerformanceMetrics = ({ rep }) => {
 
                 <ResponsiveContainer width='100%' height={150}>
                   <LineChart data={chartData} margin={{ top: 5, right: 5, left: -20, bottom: 5 }}>
-                    <CartesianGrid strokeDasharray='3 3' stroke='#374151' />
-                    <XAxis dataKey='month' stroke='#9ca3af' style={{ fontSize: '12px' }} />
-                    <YAxis stroke='#9ca3af' style={{ fontSize: '12px' }} />
+                    <CartesianGrid strokeDasharray='3 3' stroke={isDark ? '#374151' : '#e5e7eb'} />
+                    <XAxis dataKey='month' stroke={isDark ? '#9ca3af' : '#6b7280'} style={{ fontSize: '12px' }} />
+                    <YAxis stroke={isDark ? '#9ca3af' : '#6b7280'} style={{ fontSize: '12px' }} />
                     <Tooltip
                       contentStyle={{
-                        backgroundColor: '#1e293b',
-                        border: '1px solid #475569',
+                        backgroundColor: isDark ? '#1e293b' : '#ffffff',
+                        border: `1px solid ${isDark ? '#475569' : '#e5e7eb'}`,
                         borderRadius: '6px',
-                        color: '#e2e8f0'
+                        color: isDark ? '#e2e8f0' : '#1e293b'
                       }}
                     />
                     <Line

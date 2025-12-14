@@ -6,8 +6,9 @@
  */
 
 import Card from './common/Card.jsx';
-import { UI_TEXT, CSS_CLASSES, AVATAR_COLORS } from '../constants/uiConstants.js';
+import { AVATAR_COLORS } from '../constants/uiConstants.js';
 import { getInitials } from '../utils/performanceUtils.js';
+import { useTheme } from '../context/ThemeContext.jsx';
 
 /**
  * RepSelector component
@@ -22,6 +23,8 @@ import { getInitials } from '../utils/performanceUtils.js';
  * @confidential
  */
 const RepSelector = ({ reps, selectedRepId, onSelectRep }) => {
+  const { isDark } = useTheme();
+
   /**
    * Gets avatar color for representative
    * @description Returns gradient class based on index
@@ -87,7 +90,11 @@ const RepSelector = ({ reps, selectedRepId, onSelectRep }) => {
                   <div className='flex-1 min-w-0'>
                     <h3
                       className={`font-bold mb-1 truncate transition-colors ${
-                        selected ? 'text-teal-300 text-base' : 'text-slate-200 text-sm'
+                        selected
+                          ? 'text-teal-500 text-base'
+                          : isDark
+                            ? 'text-slate-200 text-sm'
+                            : 'text-slate-900 text-sm'
                       }`}
                     >
                       {rep.personalInfo.name}
@@ -95,14 +102,14 @@ const RepSelector = ({ reps, selectedRepId, onSelectRep }) => {
 
                     <div className='flex items-center gap-1.5 mb-1'>
                       <span className='text-xs'>📍</span>
-                      <p className={`text-xs truncate ${CSS_CLASSES.TEXT_SECONDARY}`}>
+                      <p className={`text-xs truncate ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
                         {rep.personalInfo.territory}
                       </p>
                     </div>
 
                     <div className='flex items-center gap-1.5'>
                       <span className='text-xs'>💼</span>
-                      <p className={`text-xs ${CSS_CLASSES.TEXT_MUTED}`}>
+                      <p className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-600'}`}>
                         {rep.personalInfo.experience}
                       </p>
                     </div>
