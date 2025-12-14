@@ -233,3 +233,108 @@ const generateFallbackInsights = () => ({
     'Consult with team lead for guidance'
   ]
 });
+
+/**
+ * Generates AI-powered comparison between two representatives
+ * @description Calls LLM API to compare two reps and generate insights
+ * @param {Object} rep1Data - First representative data object
+ * @param {Object} rep2Data - Second representative data object
+ * @param {string} apiKey - API key for the AI service
+ * @param {Object} config - Optional configuration overrides
+ * @returns {Promise<Object>} AI-generated comparison object
+ * @throws {Error} If API call fails or response is invalid
+ * @author Aravind Sekar
+ * @created 15-12-2025
+ * @confidential
+ */
+export const generateComparisonInsights = async (rep1Data, rep2Data, apiKey, config = {}) => {
+  const serviceConfig = { ...DEFAULT_AI_CONFIG, ...config };
+
+  const prompt = buildComparisonPrompt(rep1Data, rep2Data);
+
+  try {
+    const response = await callAIService(prompt, apiKey, serviceConfig);
+    return parseComparisonResponse(response);
+  } catch (error) {
+    console.error('AI Comparison Error:', error);
+    throw new Error(API_ERROR_MESSAGES.GENERIC_ERROR);
+  }
+};
+
+/**
+ * Builds comparison prompt from two representative data objects
+ * @description Constructs formatted prompt for AI comparison
+ * @param {Object} rep1Data - First representative data
+ * @param {Object} rep2Data - Second representative data
+ * @returns {string} Formatted comparison prompt
+ * @author Aravind Sekar
+ * @created 15-12-2025
+ * @confidential
+ */
+const buildComparisonPrompt = (rep1Data, rep2Data) => {
+  const rep1Perf = formatPerformanceDataForAI(rep1Data.monthlyPerformance);
+  const rep2Perf = formatPerformanceDataForAI(rep2Data.monthlyPerformance);
+
+  return `Compare the following two medical representatives and provide detailed insights:
+
+REPRESENTATIVE 1:
+Name: ${rep1Data.personalInfo.name}
+Territory: ${rep1Data.personalInfo.territory}
+Experience: ${rep1Data.personalInfo.experience}
+Trend: ${rep1Data.performanceSummary.trend}
+Avg Target Achievement: ${rep1Data.performanceSummary.avgTargetAchievement}%
+Monthly Performance:
+${rep1Perf}
+
+REPRESENTATIVE 2:
+Name: ${rep2Data.personalInfo.name}
+Territory: ${rep2Data.personalInfo.territory}
+Experience: ${rep2Data.personalInfo.experience}
+Trend: ${rep2Data.performanceSummary.trend}
+Avg Target Achievement: ${rep2Data.performanceSummary.avgTargetAchievement}%
+Monthly Performance:
+${rep2Perf}
+
+Please provide a comprehensive comparison in JSON format:
+{
+  "summary": "One sentence overall comparison verdict",
+  "rep1Strengths": ["strength1", "strength2", "strength3"],
+  "rep2Strengths": ["strength1", "strength2", "strength3"],
+  "keyDifferences": ["difference1", "difference2", "difference3"],
+  "recommendations": ["recommendation1", "recommendation2", "recommendation3"]
+}`;
+};
+
+/**
+ * Parses AI comparison response
+ * @description Extracts and validates comparison from API response
+ * @param {Object} response - Raw API response
+ * @returns {Object} Parsed comparison object
+ * @throws {Error} If response format is invalid
+ * @author Aravind Sekar
+ * @created 15-12-2025
+ * @confidential
+ */
+const parseComparisonResponse = response => {
+  try {
+    let content;
+
+    if (response.choices && response.choices[0]) {
+      content = response.choices[0].message.content;
+    } else if (response.content && response.content[0]) {
+      content = response.content[0].text;
+    } else {
+      throw new Error('Invalid response format');
+    }
+
+    const jsonMatch = content.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      throw new Error('No JSON found in response');
+    }
+
+    return JSON.parse(jsonMatch[0]);
+  } catch (error) {
+    console.error('Parse Error:', error);
+    throw new Error('Failed to parse comparison response');
+  }
+};

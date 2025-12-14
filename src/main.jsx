@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom/client';
 import App from './App.jsx';
 import './styles/index.css';
 import { APP_DOM_IDS } from './constants/domConstants.js';
+import { ThemeProvider } from './context/ThemeContext.jsx';
 
 /**
  * @description Bootstraps the Medical Rep Performance React application into the DOM.
@@ -21,7 +22,11 @@ const bootstrapApplication = () => {
 
   const root = ReactDOM.createRoot(rootElement);
 
-  root.render(<App />);
+  root.render(
+    <ThemeProvider>
+      <App />
+    </ThemeProvider>
+  );
 };
 
 bootstrapApplication();

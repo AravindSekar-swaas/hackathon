@@ -5,7 +5,7 @@
  * @created 13-12-2025
  */
 
-import { CSS_CLASSES } from '../../constants/uiConstants.js';
+import { useTheme } from '../../context/ThemeContext.jsx';
 
 /**
  * Reusable Card component
@@ -21,8 +21,18 @@ import { CSS_CLASSES } from '../../constants/uiConstants.js';
  * @confidential
  */
 const Card = ({ children, className = '', hover = false, onClick }) => {
-  const baseClasses = CSS_CLASSES.CARD;
-  const hoverClasses = hover ? CSS_CLASSES.CARD_HOVER : '';
+  const { isDark } = useTheme();
+
+  const baseClasses = `backdrop-blur-sm rounded-xl border transition-all duration-300 ${
+    isDark
+      ? 'bg-slate-800/50 border-slate-700'
+      : 'bg-white border-gray-200 shadow-sm'
+  }`;
+  const hoverClasses = hover
+    ? isDark
+      ? 'hover:border-slate-600 hover:shadow-lg'
+      : 'hover:border-gray-300 hover:shadow-md'
+    : '';
   const cursorClass = onClick ? 'cursor-pointer' : '';
 
   return (

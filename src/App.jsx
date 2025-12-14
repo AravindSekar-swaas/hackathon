@@ -6,12 +6,14 @@
  */
 
 import { useState } from 'react';
-import RepSelector from './components/RepSelector.jsx';
-import RepProfile from './components/RepProfile.jsx';
-import PerformanceMetrics from './components/PerformanceMetrics.jsx';
-import AIInsights from './components/AIInsights.jsx';
+import AppHeader from './components/AppHeader.jsx';
+import AppFooter from './components/AppFooter.jsx';
+import SingleRepView from './components/SingleRepView.jsx';
+import RepComparison from './components/RepComparison.jsx';
 import { REP_PERFORMANCE_DATA } from './constants/repData.js';
-import { UI_TEXT, CSS_CLASSES } from './constants/uiConstants.js';
+import { useTheme } from './context/ThemeContext.jsx';
+import { useRepSelection } from './hooks/useRepSelection.js';
+import { useViewMode } from './hooks/useViewMode.js';
 
 /**
  * Main App component
@@ -22,80 +24,36 @@ import { UI_TEXT, CSS_CLASSES } from './constants/uiConstants.js';
  * @confidential
  */
 const App = () => {
+  const { isDark } = useTheme();
   const FIRST_REP_ID = REP_PERFORMANCE_DATA.reps[0]?.id || null;
-  const [selectedRepId, setSelectedRepId] = useState(FIRST_REP_ID);
-  const [apiKey, setApiKey] = useState(import.meta.env.VITE_OPENAI_API_KEY || '');
-
-  /**
-   * Gets selected representative data
-   * @description Finds rep object by ID
-   * @returns {Object|null} Representative data or null
-   * @author Aravind Sekar
-   * @created 13-12-2025
-   * @confidential
-   */
-  const getSelectedRep = () => {
-    if (!selectedRepId) {
-      return null;
-    }
-    return REP_PERFORMANCE_DATA.reps.find(rep => rep.id === selectedRepId);
-  };
-
-  /**
-   * Handles representative selection
-   * @description Updates selected rep ID state
-   * @param {string} repId - Representative ID
-   * @returns {void}
-   * @author Aravind Sekar
-   * @created 13-12-2025
-   * @confidential
-   */
-  const handleSelectRep = repId => {
-    setSelectedRepId(repId);
-  };
-
-  const selectedRep = getSelectedRep();
+  const { selectedRepId, handleSelectRep } = useRepSelection(FIRST_REP_ID);
+  const { viewMode, handleViewChange } = useViewMode('single');
+  const [apiKey] = useState(import.meta.env.VITE_OPENAI_API_KEY || '');
 
   return (
-    <div className={CSS_CLASSES.CONTAINER}>
-      <header className={`${CSS_CLASSES.HEADER} py-6 px-8`}>
-        <div className='max-w-7xl mx-auto text-center'>
-          <h1 className={`text-2xl font-bold ${CSS_CLASSES.TEXT_PRIMARY}`}>{UI_TEXT.APP_TITLE}</h1>
-          <p className={`text-sm ${CSS_CLASSES.TEXT_SECONDARY}`}>{UI_TEXT.COMPANY_NAME}</p>
-        </div>
-      </header>
+    <div
+      className={`min-h-screen transition-colors duration-300 ${
+        isDark
+          ? 'bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900'
+          : 'bg-gradient-to-br from-blue-50 via-white to-blue-50'
+      }`}
+    >
+      <AppHeader viewMode={viewMode} onViewChange={handleViewChange} />
 
       <main className='max-w-7xl mx-auto px-8 py-6'>
-        <div className='flex justify-center mb-6'>
-          <RepSelector
+        {viewMode === 'single' ? (
+          <SingleRepView
             reps={REP_PERFORMANCE_DATA.reps}
             selectedRepId={selectedRepId}
             onSelectRep={handleSelectRep}
+            apiKey={apiKey}
           />
-        </div>
-
-        {selectedRep && (
-          <div className='grid grid-cols-1 lg:grid-cols-12 gap-6 mt-6'>
-            <div className='lg:col-span-4'>
-              <RepProfile rep={selectedRep} />
-            </div>
-
-            <div className='lg:col-span-8'>
-              <PerformanceMetrics rep={selectedRep} />
-              <AIInsights rep={selectedRep} apiKey={apiKey} />
-            </div>
-          </div>
+        ) : (
+          <RepComparison reps={REP_PERFORMANCE_DATA.reps} apiKey={apiKey} />
         )}
       </main>
 
-      <footer className={`${CSS_CLASSES.HEADER} py-4 px-8 mt-12`}>
-        <div className='max-w-7xl mx-auto text-center'>
-          <p className={`text-xs ${CSS_CLASSES.TEXT_MUTED}`}>
-            Data Range: {REP_PERFORMANCE_DATA.metadata.dataRange} | Last Updated:{' '}
-            {REP_PERFORMANCE_DATA.metadata.lastUpdated}
-          </p>
-        </div>
-      </footer>
+      <AppFooter metadata={REP_PERFORMANCE_DATA.metadata} />
     </div>
   );
 };

@@ -10,7 +10,7 @@ import Card from './common/Card.jsx';
 import LoadingSpinner from './common/LoadingSpinner.jsx';
 import { UI_TEXT, CSS_CLASSES } from '../constants/uiConstants.js';
 import { generatePerformanceInsights } from '../services/aiService.js';
-
+import { useTheme } from '../context/ThemeContext.jsx';
 /**
  * AIInsights component
  * @description Displays AI-generated performance insights with color-coded sections
@@ -26,6 +26,7 @@ const AIInsights = ({ rep, apiKey }) => {
   const [insights, setInsights] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const { isDark } = useTheme();
 
   useEffect(() => {
     loadInsights();
@@ -176,7 +177,7 @@ const AIInsights = ({ rep, apiKey }) => {
 
   return (
     <div className='mb-6'>
-      <h2 className={`text-xl font-semibold mb-4 ${CSS_CLASSES.TEXT_PRIMARY}`}>
+      <h2 className={`text-xl font-semibold mb-4 ${isDark ? 'text-slate-100' : 'text-slate-900'}`}>
         {UI_TEXT.AI_INSIGHTS}
       </h2>
 
@@ -184,7 +185,7 @@ const AIInsights = ({ rep, apiKey }) => {
         <div className='flex items-start gap-3'>
           <span className='text-2xl'>🤖</span>
           <div>
-            <h3 className={`font-semibold mb-2 ${CSS_CLASSES.TEXT_PRIMARY}`}>
+            <h3 className={`font-semibold mb-2 ${isDark ? 'text-slate-100' : 'text-slate-900'}`}>
               {UI_TEXT.OVERALL_SUMMARY}
             </h3>
             <p className={`text-sm leading-relaxed ${CSS_CLASSES.TEXT_SECONDARY}`}>
@@ -198,7 +199,7 @@ const AIInsights = ({ rep, apiKey }) => {
         <Card className={`p-6 ${CSS_CLASSES.INSIGHT_TRENDS}`}>
           <div className='flex items-center gap-2 mb-3'>
             <span className='text-xl'>📈</span>
-            <h3 className={`font-semibold text-blue-400`}>{UI_TEXT.TREND_INSIGHTS}</h3>
+            <h3 className={'font-semibold text-blue-400'}>{UI_TEXT.TREND_INSIGHTS}</h3>
           </div>
           <ul className='space-y-2'>
             {insights.trendInsights.map((insight, index) => (
@@ -215,7 +216,7 @@ const AIInsights = ({ rep, apiKey }) => {
         <Card className={`p-6 ${CSS_CLASSES.INSIGHT_STRENGTHS}`}>
           <div className='flex items-center gap-2 mb-3'>
             <span className='text-xl'>💪</span>
-            <h3 className={`font-semibold text-green-400`}>{UI_TEXT.KEY_STRENGTHS}</h3>
+            <h3 className={'font-semibold text-green-400'}>{UI_TEXT.KEY_STRENGTHS}</h3>
           </div>
           <ul className='space-y-2'>
             {insights.keyStrengths.map((strength, index) => (
@@ -232,7 +233,7 @@ const AIInsights = ({ rep, apiKey }) => {
         <Card className={`p-6 ${CSS_CLASSES.INSIGHT_RISKS}`}>
           <div className='flex items-center gap-2 mb-3'>
             <span className='text-xl'>⚠️</span>
-            <h3 className={`font-semibold text-red-400`}>{UI_TEXT.RISK_AREAS}</h3>
+            <h3 className={'font-semibold text-red-400'}>{UI_TEXT.RISK_AREAS}</h3>
           </div>
           <ul className='space-y-2'>
             {insights.riskAreas.map((risk, index) => (
@@ -249,7 +250,7 @@ const AIInsights = ({ rep, apiKey }) => {
         <Card className={`p-6 ${CSS_CLASSES.INSIGHT_HABITS}`}>
           <div className='flex items-center gap-2 mb-3'>
             <span className='text-xl'>✨</span>
-            <h3 className={`font-semibold text-purple-400`}>{UI_TEXT.SUGGESTED_HABITS}</h3>
+            <h3 className={'font-semibold text-purple-400'}>{UI_TEXT.SUGGESTED_HABITS}</h3>
           </div>
           <ul className='space-y-2'>
             {insights.suggestedHabits.map((habit, index) => (

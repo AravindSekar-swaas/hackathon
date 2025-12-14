@@ -7,8 +7,9 @@
 
 import { useState, useEffect } from 'react';
 import Card from './Card.jsx';
-import { CSS_CLASSES, ANIMATION_DURATION } from '../../constants/uiConstants.js';
+import { ANIMATION_DURATION } from '../../constants/uiConstants.js';
 import { formatNumber } from '../../utils/performanceUtils.js';
+import { useTheme } from '../../context/ThemeContext.jsx';
 
 const COUNTER_STEPS = 20;
 
@@ -29,6 +30,7 @@ const COUNTER_STEPS = 20;
  * @confidential
  */
 const StatCard = ({ label, value, icon, color, unit = '', trend, target }) => {
+  const { isDark } = useTheme();
   const [displayValue, setDisplayValue] = useState(0);
 
   useEffect(() => {
@@ -104,11 +106,16 @@ const StatCard = ({ label, value, icon, color, unit = '', trend, target }) => {
         <div className='flex-1'>
           <div className='flex items-center gap-2 mb-2'>
             <span className='text-2xl'>{icon}</span>
-            <span className={`text-sm font-medium ${CSS_CLASSES.TEXT_SECONDARY}`}>{label}</span>
+            <span className={`text-sm font-medium ${isDark ? 'text-slate-400' : 'text-slate-700'}`}>
+              {label}
+            </span>
           </div>
 
           <div className='flex items-baseline gap-2'>
-            <span className={`text-3xl font-bold ${CSS_CLASSES.TEXT_PRIMARY}`} style={{ color }}>
+            <span
+              className={`text-3xl font-bold ${isDark ? 'text-slate-100' : 'text-slate-900'}`}
+              style={{ color }}
+            >
               {formatNumber(displayValue)}
               {unit}
             </span>
@@ -117,7 +124,7 @@ const StatCard = ({ label, value, icon, color, unit = '', trend, target }) => {
           </div>
 
           {target && (
-            <div className={`mt-2 text-sm ${CSS_CLASSES.TEXT_MUTED}`}>
+            <div className={`mt-2 text-sm ${isDark ? 'text-slate-500' : 'text-slate-600'}`}>
               Target: {formatNumber(target)}
               {unit}
             </div>
