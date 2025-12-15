@@ -11,7 +11,7 @@ import LoadingSpinner from './common/LoadingSpinner.jsx';
 import { useTheme } from '../context/ThemeContext.jsx';
 import { generateComparisonInsights } from '../services/aiService.js';
 import { getInitials, getLatestMetrics, formatNumber } from '../utils/performanceUtils.js';
-import { AVATAR_COLORS, METRIC_CONFIG } from '../constants/uiConstants.js';
+import { AVATAR_COLORS } from '../constants/uiConstants.js';
 
 // ============================================================================
 // CONSTANTS
@@ -80,7 +80,7 @@ const INSIGHT_CARD_CONFIG = {
 
 /**
  * Compares two metric values
- * @description Returns comparison result with winner and difference
+ * @description Returns comparison result with winner
  * @param {number} value1 - First value
  * @param {number} value2 - Second value
  * @returns {Object} Comparison result
@@ -90,12 +90,10 @@ const INSIGHT_CARD_CONFIG = {
  */
 const compareMetricValues = (value1, value2) => {
   const diff = value1 - value2;
-  const percentage = value2 > 0 ? ((diff / value2) * 100).toFixed(1) : 0;
 
   return {
     winner: diff > 0 ? 1 : diff < 0 ? 2 : 0,
     difference: Math.abs(diff),
-    percentage: Math.abs(percentage),
     isEqual: diff === 0
   };
 };
@@ -330,17 +328,6 @@ const MetricRow = ({ metric, value1, value2, rep1Name, rep2Name, isDark }) => {
             </div>
             <div className='text-xs text-slate-500'>{rep2Name}</div>
           </div>
-          {!comparison.isEqual && (
-            <div
-              className={`px-3 py-1 rounded-full text-xs font-bold ${
-                comparison.winner === 1
-                  ? 'bg-blue-500/20 text-blue-400'
-                  : 'bg-green-500/20 text-green-400'
-              }`}
-            >
-              {comparison.winner === 1 ? '↑' : '↓'} {comparison.percentage}%
-            </div>
-          )}
         </div>
       </div>
     </div>
